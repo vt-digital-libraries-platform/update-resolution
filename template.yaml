@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  update-resolution
+
+  An AWS Lambda function to update resolution records in Mint DynamoDB table based on the NOID primary key 
+
+Globals:
+  Function:
+    Timeout: 900
+
+Parameters:
+    CollectionCategory:
+      Type: String
+    CollectionTable:
+      Type: String
+    ArchiveTable:
+      Type: String
+    MintTable:
+      Type: String
+    NOIDNAA:
+      Type: String
+      Default: "53696"
+    NOIDScheme:
+      Type: String
+      Default: "ark:/"
+    Region:
+      Type: String
+      Default: "us-east-1"
+    LongURLPath:
+      Type: String
+    ShortURLPath:
+      Type: String
+    APIKey:
+      Type: String
+    APIEndpoint:
+      Type: String
+
+Resources:
+  updateResolutionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      MemorySize: 2048
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MintTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref CollectionTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref ArchiveTable
+      Environment:
+          Variables:
+            DEBUG: 1
+            Collection_Category: !Ref CollectionCategory
+            Collection_Table: !Ref CollectionTable
+            Archive_Table: !Ref ArchiveTable
+            Mint_Table: !Ref MintTable
+            NOID_NAA: !Ref NOIDNAA
+            NOID_Scheme: !Ref NOIDScheme
+            Region: !Ref Region
+            Long_URL_Path: !Ref LongURLPath
+            Short_URL_Path: !Ref ShortURLPath
+            API_Key: !Ref APIKey
+            API_Endpoint: !Ref APIEndpoint
+
+Outputs:
+  updateResolutionFunction:
+    Description: "updateResolution Lambda Function ARN"
+    Value: !GetAtt updateResolutionFunction.Arn
