@@ -1,6 +1,48 @@
 # update-resolution-table
 
-Update resolution records such as long_url, short_url and other related attributes based on NOID 
+Update resolution records in Mint table based on NOID
+
+## Deploy the dlp-access-lambdas application using CloudFormation stack
+
+### Through a Launch stack URL
+
+#### Step 1: Launch CloudFormation stack
+[![Launch Stack](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=updateResolution&templateURL=https://vtdlp-dev-cf.s3.amazonaws.com/32270c4e6515edae09e4bd8acdc81d58.template)
+
+Click **Next** to continue
+
+#### Step 2: Specify stack details
+
+| Name | Description |
+|----------|:-------------:|
+| Stack name | any valid name |
+| Collection_Category | IAWA |
+| Collection_Table | DynamoDB collection table name |
+| Archive_Table | DynamoDB archive table name |
+| Mint_Table | DynamoDB mint table name |
+| NOID_NAA | 53696 |
+| NOID_Scheme | ark:/ |
+| REGION | us-east-1 |
+| LONG_URL_Path | https://iawa.lib.vt.edu/ |
+| SHORT_URL_Path | http://idn.lib.vt.edu/ |
+| API_Key | API Key for mint|
+| API_Endpoint | https://xxxx.execute-api.us-east-1.amazonaws.com/Prod/ |
+
+#### Step 3: Configure stack options
+Click **Next** to continue
+
+#### Step 4: Review
+**Check** all checkboxes under *Capabilities and transforms*
+
+Click **Create stack**
+
+### Through AWS CLI
+```
+wget https://vtdlp-dev-cf.s3.amazonaws.com/32270c4e6515edae09e4bd8acdc81d58.template -O updateResolutinLambas.template
+
+aws cloudformation deploy --template-file updateResolutinLambas.template --stack-name demo --parameter-overrides 'CollectionCategory=RepoType CollectionTable=CollectionTableName ArchiveTable=ArchiveTableName MintTable=MintTableName NOIDNAA=53696 NOIDScheme=ark:/ Region=us-east-1  LongURLPath=LongURLPath ShortURLPath=ShortURLPath APIKey=APIKey APIEndpoint=APIEndpoint' --capabilities CAPABILITY_IAM --region us-east-1
+```
+
 
 ## Deploy the dlp-access-lambdas application using SAM CLI
 
